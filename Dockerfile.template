@@ -40,6 +40,7 @@ RUN usermod -a -G lpadmin root
 # Move cup configs
 COPY cupsd.conf /etc/cups/cupsd.conf
 COPY G302_HP_LaserJet_1012.ppd /etc/cups/ppd/
+COPY printers.conf /etc/cups/
 RUN rm cupsd.conf G302_HP_LaserJet_1012.ppd
 
 # Allow for services to be reached
