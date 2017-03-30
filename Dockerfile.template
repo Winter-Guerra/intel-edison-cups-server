@@ -29,14 +29,9 @@ ENV INITSYSTEM on
 # Enable transfer.sh
 RUN cat transfer.sh >> ~/.bashrc  && rm -f transfer.sh
 
-# Install packages
-RUN apt-get update && apt-get install -yq \
-    curl && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
 # Install packages for cups server
 RUN apt-get update && apt-get install -yq \
-    hplip cups && \
+    hplip cups curl && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Make root part of the cup server
@@ -45,19 +40,7 @@ RUN usermod -a -G lpadmin root
 # Move cup configs
 COPY cupsd.conf /etc/cups/cupsd.conf
 COPY G302_HP_LaserJet_1012.ppd /etc/cups/ppd/
-
-# Expose SSH on the server
-# here we install apt dependencies. We also remove the apt lists in the same step,
-# this reduces the size of the docker image.
-#RUN apt-get update && apt-get install -yq --no-install-recommends \
-#    openssh-server && \
-#    apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# here we set up the config for openSSH.
-#RUN mkdir /var/run/sshd \
-#    && echo 'root:resin' | chpasswd \
-#    && sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/#sshd_config \
-#    && sed -i 's/UsePAM yes/UsePAM no/' /etc/ssh/sshd_config
+RUN rm cupsd.conf G302_HP_LaserJet_1012.ppd
 
 # Allow for services to be reached
 EXPOSE 631
