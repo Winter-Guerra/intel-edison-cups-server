@@ -42,9 +42,9 @@ RUN apt-get update && apt-get install -yq \
 # Make root part of the cup server
 RUN usermod -a -G lpadmin root
 
-# Move cup config
+# Move cup configs
 COPY cupsd.conf /etc/cups/cupsd.conf
-
+COPY G302_HP_LaserJet_1012.ppd /etc/cups/ppd/
 
 # Expose SSH on the server
 # here we install apt dependencies. We also remove the apt lists in the same step,
