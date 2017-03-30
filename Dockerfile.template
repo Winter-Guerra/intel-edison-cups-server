@@ -31,6 +31,11 @@ RUN cat transfer.sh >> ~/.bashrc  && rm -f transfer.sh
 
 # Install packages
 RUN apt-get update && apt-get install -yq \
+    curl && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install packages for cups server
+RUN apt-get update && apt-get install -yq \
     hplip cups && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
