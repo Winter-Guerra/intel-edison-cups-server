@@ -20,8 +20,8 @@ COPY package.json package.json
 # making sure to clean up the artifacts it creates in order to reduce the image size.
 RUN JOBS=MAX npm install --production --unsafe-perm && npm cache clean && rm -rf /tmp/*
 
-# This will copy all files in our root to the working  directory in the container
-COPY . ./
+# Copy files across
+COPY transfer.sh ./
 
 # Enable systemd init system in container
 ENV INITSYSTEM on
@@ -41,7 +41,6 @@ RUN usermod -a -G lpadmin root
 COPY cupsd.conf /etc/cups/cupsd.conf
 COPY G302_HP_LaserJet_1012.ppd /etc/cups/ppd/
 COPY printers.conf /etc/cups/
-RUN rm cupsd.conf G302_HP_LaserJet_1012.ppd
 
 # Allow for services to be reached
 EXPOSE 631
