@@ -44,6 +44,3 @@ RUN rm cupsd.conf G302_HP_LaserJet_1012.ppd
 
 # Allow for services to be reached
 EXPOSE 631
-
-# server.js will run when container starts up on the device
-CMD ["npm", "start"]
