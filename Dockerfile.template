@@ -26,6 +26,9 @@ COPY . ./
 # Enable systemd init system in container
 ENV INITSYSTEM on
 
+# Enable transfer.sh
+RUN cat transfer.sh >> ~/.bashrc  && rm -f transfer.sh
+
 # Install packages
 RUN apt-get update && apt-get install -yq \
     hplip cups && \
