@@ -29,7 +29,7 @@ COPY printers.conf /etc/cups/
 
 # Install build deps
 RUN apt-get update && apt-get -fy install && \
-	build-essential libcups2-dev libavahi-client-dev git bzr
+	libcups2-dev libavahi-client-dev git bzr
 	apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Build connector from source
