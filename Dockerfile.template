@@ -36,15 +36,15 @@ RUN apt-get update && apt-get install -yq \
 RUN go get github.com/google/cloud-print-connector/...
 
 # Setup connector
-#RUN useradd -s /usr/sbin/nologin -r -M cloud-print-connector && \
-#	mkdir /opt/cloud-print-connector && \
-#	mv ~/go/bin/gcp-cups-connector /opt/cloud-print-connector && \
-#	mv ~/go/bin/gcp-connector-util /opt/cloud-print-connector && \
-#	chmod 755 /opt/cloud-print-connector/gcp-cups-connector && \
-#	chmod 755 /opt/cloud-print-connector/gcp-connector-util && \
-#	chown cloud-print-connector:cloud-print-connector /opt/cloud-print-connector/gcp-cups-connector && \
-#	chown cloud-print-connector:cloud-print-connector /opt/cloud-print-connector/gcp-connector-util && \
-#	rm -f ~/go/bin/gcp*
+RUN useradd -s /usr/sbin/nologin -r -M cloud-print-connector && \
+	mkdir /opt/cloud-print-connector && \
+	mv $GOPATH/bin/gcp-cups-connector /opt/cloud-print-connector && \
+	mv $GOPATH/bin/gcp-connector-util /opt/cloud-print-connector && \
+	chmod 755 /opt/cloud-print-connector/gcp-cups-connector && \
+	chmod 755 /opt/cloud-print-connector/gcp-connector-util && \
+	chown cloud-print-connector:cloud-print-connector /opt/cloud-print-connector/gcp-cups-connector && \
+	chown cloud-print-connector:cloud-print-connector /opt/cloud-print-connector/gcp-connector-util && \
+	rm -f $GOPATH/bin/gcp*
 	
 # Configure GCP from ENV
 
