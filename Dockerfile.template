@@ -1,24 +1,7 @@
-# base-image for node on any machine using a template variable,
-# see more about dockerfile templates here: http://docs.resin.io/deployment/docker-templates/
-# and about resin base images here: http://docs.resin.io/runtime/resin-base-images/
-# Note the node:slim image doesn't have node-gyp
-FROM resin/%%RESIN_MACHINE_NAME%%-node:slim
+# base-image for golang on any machine using a template var
+FROM resin/%%RESIN_MACHINE_NAME%%-golang:latest
 
-# use apt-get if you need to install dependencies,
-# for instance if you need ALSA sound utils, just uncomment the lines below.
-#RUN apt-get update && apt-get install -yq \
-#    alsa-utils libasound2-dev && \
-#    apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Defines our working directory in container
-WORKDIR /usr/src/app
-
-# Copies the package.json first for better cache on later pushes
-COPY package.json package.json
-
-# This install npm dependencies on the resin.io build server,
-# making sure to clean up the artifacts it creates in order to reduce the image size.
-RUN JOBS=MAX npm install --production --unsafe-perm && npm cache clean && rm -rf /tmp/*
+ENV INITSYSTEM on
 
 # Copy files across
 COPY transfer.sh ./
@@ -41,6 +24,29 @@ RUN usermod -a -G lpadmin root
 COPY cupsd.conf /etc/cups/cupsd.conf
 COPY G302_HP_LaserJet_1012.ppd /etc/cups/ppd/
 COPY printers.conf /etc/cups/
+
+###### INSTALL GOOGLE CLOUD PRINT SERVER
+
+# Install build deps
+RUN apt-get update && apt-get -fy install && \
+	build-essential libcups2-dev libavahi-client-dev git bzr
+	apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Build connector from source
+RUN go get github.com/google/cloud-print-connector/...
+
+# Setup connector
+RUN useradd -s /usr/sbin/nologin -r -M cloud-print-connector && \
+	mkdir /opt/cloud-print-connector && \
+	mv ~/go/bin/gcp-cups-connector /opt/cloud-print-connector && \
+	mv ~/go/bin/gcp-connector-util /opt/cloud-print-connector && \
+	chmod 755 /opt/cloud-print-connector/gcp-cups-connector && \
+	chmod 755 /opt/cloud-print-connector/gcp-connector-util && \
+	chown cloud-print-connector:cloud-print-connector /opt/cloud-print-connector/gcp-cups-connector && \
+	chown cloud-print-connector:cloud-print-connector /opt/cloud-print-connector/gcp-connector-util && \
+	rm -f ~/go/bin/gcp*
+	
+# Configure GCP from ENV
 
 # Allow for services to be reached
 EXPOSE 631
