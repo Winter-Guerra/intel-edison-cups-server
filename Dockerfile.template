@@ -28,23 +28,23 @@ COPY printers.conf /etc/cups/
 ###### INSTALL GOOGLE CLOUD PRINT SERVER
 
 # Install build deps
-RUN apt-get update && apt-get -fy install && \
-	libcups2-dev libavahi-client-dev git bzr
+RUN apt-get update && apt-get install -yq \
+	build-essential libcups2-dev libavahi-client-dev git bzr && \
 	apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Build connector from source
 RUN go get github.com/google/cloud-print-connector/...
 
 # Setup connector
-RUN useradd -s /usr/sbin/nologin -r -M cloud-print-connector && \
-	mkdir /opt/cloud-print-connector && \
-	mv ~/go/bin/gcp-cups-connector /opt/cloud-print-connector && \
-	mv ~/go/bin/gcp-connector-util /opt/cloud-print-connector && \
-	chmod 755 /opt/cloud-print-connector/gcp-cups-connector && \
-	chmod 755 /opt/cloud-print-connector/gcp-connector-util && \
-	chown cloud-print-connector:cloud-print-connector /opt/cloud-print-connector/gcp-cups-connector && \
-	chown cloud-print-connector:cloud-print-connector /opt/cloud-print-connector/gcp-connector-util && \
-	rm -f ~/go/bin/gcp*
+#RUN useradd -s /usr/sbin/nologin -r -M cloud-print-connector && \
+#	mkdir /opt/cloud-print-connector && \
+#	mv ~/go/bin/gcp-cups-connector /opt/cloud-print-connector && \
+#	mv ~/go/bin/gcp-connector-util /opt/cloud-print-connector && \
+#	chmod 755 /opt/cloud-print-connector/gcp-cups-connector && \
+#	chmod 755 /opt/cloud-print-connector/gcp-connector-util && \
+#	chown cloud-print-connector:cloud-print-connector /opt/cloud-print-connector/gcp-cups-connector && \
+#	chown cloud-print-connector:cloud-print-connector /opt/cloud-print-connector/gcp-connector-util && \
+#	rm -f ~/go/bin/gcp*
 	
 # Configure GCP from ENV
 
